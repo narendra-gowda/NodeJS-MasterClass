@@ -15,7 +15,7 @@ let server = http.createServer(function(req, res){
 
   //Extracting the path from the parsed data
   let path = parsedUrl.pathname;
-  let trimmedPath = path.replace(/^\/+|\/+s/g,'');
+  let trimmedPath = path.replace(/^\/|\/$/g, '');
 
   //Get http method requested
   let method = req.method;
@@ -55,7 +55,8 @@ let server = http.createServer(function(req, res){
       //Converting object to string
       var payloadString = JSON.stringify(payload);
 
-      //Respond to request
+      //Respond to request and the following must be in this order to work
+      res.setHeader('Content-Type','application/json');
       res.writeHead(statusCode);
       res.end(payloadString);
   
