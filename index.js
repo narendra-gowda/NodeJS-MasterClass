@@ -35,20 +35,57 @@ let server = http.createServer(function(req, res){
   req.on('end', function(){
     buffer += decoder.end();
     console.log('Requested payload: '+buffer);
+
+    var chosenHandler = typeof(router[trimmedPath]) !== 'undefined' ? router[trimmedPath] : handlers.notFound;
+
+    var data = {
+      trimmedPath: trimmedPath,
+      method: method,
+      queryObject: queryObject,
+      headers: headers,
+    }
+
+    chosenHandler(data, function(statusCode, payload){
+      //Checking if statusCode is passed, if passed it remains same else default to 200
+      statusCode = typeof(statusCode) === 'number' ? statusCode : 200
+
+      //Checking if payload is passed, if passed it remains same else default to empty object
+      payload = typeof(payload) === 'object' ? payload : {}
+
+      //Converting object to string
+      var payloadString = JSON.stringify(payload);
+
+      //Respond to request
+      res.writeHead(statusCode);
+      res.end(payloadString);
   
+      //Log the requested path
+      console.log('Requested path from URL: '+trimmedPath+ ' with method: '+method + ' and with query: ', queryObject);
+      console.log('Returning response: ', statusCode, payloadString)
+      // console.log({req});
+      console.log('Headers: ',headers)
 
-    //Respond to request
-    res.end('Hello Narendra\n');
-
-    //Log the requested path
-    console.log('Requested path from URL: '+trimmedPath+ ' with method: '+method + ' and with query: ', queryObject);
-    // console.log({req});
-    console.log('Headers: ',headers)
+    });
   });
-
 });
 
 //The server should listen on a port
 server.listen(8080, function(){
   console.log('The server is listening on port 8080 now');
 });
+
+var handlers = {}
+
+//define handlers
+handlers.sample = function (data, callback) {
+  callback(201, {name: 'This is a response for sample page'})
+}
+
+handlers.notFound = function(data, callback){
+  callback(404)
+}
+
+//define router
+var router = {
+  'sample': handlers.sample
+}
