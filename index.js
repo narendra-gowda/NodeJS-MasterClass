@@ -5,11 +5,39 @@
 
 //importing dependencies
 const http = require('http');
+const https = require('https');
 const url = require('url');
+const fs = require('fs');
 const StringDecoder = require('string_decoder').StringDecoder;
+var config = require('./config');
 
-//The server should respond with a string when requested
-let server = http.createServer(function(req, res){
+//Instantiating HTTP server
+let httpServer = http.createServer(function(req, res){
+  unifiedServer(req, res);
+});
+
+//The server should listen on a httpport 
+httpServer.listen(config.httpPort, function(){
+  console.log('The server is listening on port '+config.httpPort+' in '+config.envName+' environment now');
+});
+
+//Instantiating HTTPS server
+var httpsServerOptions = {
+  'key': fs.readFileSync('./https/key.pem'),
+  'cert': fs.readFileSync('./https/cert.pem'),
+}
+let httpsServer = https.createServer(httpsServerOptions, function(req, res){
+  unifiedServer(req, res);
+});
+
+//The server should listen on a httpsport
+httpsServer.listen(config.httpsPort, function(){
+  console.log('The server is listening on port '+config.httpsPort+' in '+config.envName+' environment now');
+});
+
+//A generic function that applies generic features to both servers
+var unifiedServer = function(req, res) {
+
   //Parse the URL received from the request
   let parsedUrl = url.parse(req.url,true);
 
@@ -68,12 +96,7 @@ let server = http.createServer(function(req, res){
 
     });
   });
-});
-
-//The server should listen on a port
-server.listen(8080, function(){
-  console.log('The server is listening on port 8080 now');
-});
+};
 
 var handlers = {}
 
