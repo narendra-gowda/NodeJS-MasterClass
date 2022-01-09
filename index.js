@@ -10,6 +10,12 @@ const url = require('url');
 const fs = require('fs');
 const StringDecoder = require('string_decoder').StringDecoder;
 var config = require('./config');
+var _data = require('./lib/data');
+
+//Testing the create FS
+_data.create('test','newFile',{name: 'Narendra'},function(err){
+  console.log('Error received: ',err);
+})
 
 //Instantiating HTTP server
 let httpServer = http.createServer(function(req, res){
@@ -105,11 +111,16 @@ handlers.sample = function (data, callback) {
   callback(201, {name: 'This is a response for sample page'})
 }
 
+handlers.ping = function(data, callback) {
+  callback(200)
+}
+
 handlers.notFound = function(data, callback){
   callback(404)
 }
 
 //define router
 var router = {
-  'sample': handlers.sample
+  'sample': handlers.sample,
+  'ping': handlers.ping,
 }
