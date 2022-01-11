@@ -9,13 +9,15 @@ const https = require('https');
 const url = require('url');
 const fs = require('fs');
 const StringDecoder = require('string_decoder').StringDecoder;
-var config = require('./config');
+var config = require('./lib/config');
 var _data = require('./lib/data');
+var handlers = require('./lib/handlers');
+var helpers = require('./lib/helpers');
 
 //Testing the create FS
-_data.create('test','newFile',{name: 'Narendra'},function(err){
-  console.log('Error received: ',err);
-})
+// _data.create('test','newFile',{name: 'Narendra'},function(err){
+//   console.log('Error received: ',err);
+// })
 
 //Instantiating HTTP server
 let httpServer = http.createServer(function(req, res){
@@ -77,6 +79,7 @@ var unifiedServer = function(req, res) {
       method: method,
       queryObject: queryObject,
       headers: headers,
+      payload: helpers.parseJsonToObject(buffer),
     }
 
     chosenHandler(data, function(statusCode, payload){
@@ -104,23 +107,9 @@ var unifiedServer = function(req, res) {
   });
 };
 
-var handlers = {}
-
-//define handlers
-handlers.sample = function (data, callback) {
-  callback(201, {name: 'This is a response for sample page'})
-}
-
-handlers.ping = function(data, callback) {
-  callback(200)
-}
-
-handlers.notFound = function(data, callback){
-  callback(404)
-}
-
 //define router
 var router = {
   'sample': handlers.sample,
   'ping': handlers.ping,
+  'users': handlers.users,
 }
