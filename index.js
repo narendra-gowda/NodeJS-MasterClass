@@ -19,6 +19,11 @@ var helpers = require('./lib/helpers');
 //   console.log('Error received: ',err);
 // })
 
+//Testing Twilio
+// helpers.sendTwilioSms('9980636388', 'Hello Naren', function(err){
+//   console.log('This was the error: ', err)
+// })
+
 //Instantiating HTTP server
 let httpServer = http.createServer(function(req, res){
   unifiedServer(req, res);
