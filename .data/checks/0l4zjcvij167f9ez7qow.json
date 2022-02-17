@@ -1,1 +1,1 @@
-{"id":"0l4zjcvij167f9ez7qow","protocol":"http","method":"GET","url":"reddit.com","successCodes":[200,201],"timeoutSeconds":4,"userPhone":"9980636388"}
+{"id":"0l4zjcvij167f9ez7qow","protocol":"https","method":"GET","url":"www.reddit.com","successCodes":[200,201],"timeoutSeconds":4,"userPhone":"9980636388","state":"up","lastChecked":1645128416917}
